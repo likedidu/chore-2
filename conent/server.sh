@@ -21,18 +21,19 @@ generate_config() {
       "server": "0.0.0.0",
       "server_port": 8388,
       "method": "chacha20-ietf-poly1305",
-      "password": "Y02ds+Tb6hzEtQsrmNKzKg=="
+      "password": "Y02ds+Tb6hzEtQsrmNKzKg==",
+      "timeout":600,
     }
   ],
 
   "manager_address": "127.0.0.1",
   "manager_port": 61000,
 
-  "dns": "google",
-  "dns_cache_size": 1,
+  "dns": "cloudflare_https",
+  "dns_cache_size": 128,
   "mode": "tcp_and_udp",
 
-  "no_delay": false,
+  "no_delay": true,
   "keep_alive": 15,
   "ipv6_first": true,
   "ipv6_only": false
