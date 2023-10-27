@@ -4,6 +4,13 @@ WORKDIR /tmp
 
 COPY ./config /app/
 
+ENV PORT=3000
+ENV SecretPATH=/mypath
+ENV PASSWORD=password
+ENV WG_MTU=1408
+ENV BLOCK_QUIC_443=true
+ENV CLASH_MODE=rule
+
 RUN apk add --no-cache caddy jq \
     && sh /app/install.sh \
     && rm /app/install.sh \
