@@ -23,18 +23,18 @@ fi
 
 cd /usr/bin
 
-exec ./app* run -c /tmp/config.json
+./app* run -c /tmp/config.json &
 
-exec caddy run --config /app/Caddyfile --adapter caddyfile
+caddy run --config /app/Caddyfile --adapter caddyfile &
 
 DIR_CONFIG="/app"
 
 # Config & Run argo tunnel
 if [ "${ArgoJSON}" = "" ]; then
-    exec sleep infinity
+    sleep infinity
 else
     echo $ArgoJSON >${DIR_CONFIG}/argo.json
     ARGOID="$(jq .TunnelID ${DIR_CONFIG}/argo.json | sed 's/\"//g')"
     sed -i "s|ARGOID|${ARGOID}|g;s|PORT|${PORT}|" ${DIR_CONFIG}/argo.yaml
-    exec argo --loglevel info tunnel -config ${DIR_CONFIG}/argo.yaml run ${ARGOID}
+    argo --loglevel info tunnel -config ${DIR_CONFIG}/argo.yaml run ${ARGOID} &
 fi
