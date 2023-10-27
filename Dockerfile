@@ -1,21 +1,26 @@
-FROM alpine
+FROM node:21.1.0-bookworm
 
-WORKDIR /tmp
+WORKDIR /usr/src/app
 
-COPY ./config /app/
+COPY . .
 
-ENV PORT=3000
-ENV SecretPATH=/mypath
-ENV PASSWORD=password
-ENV WG_MTU=1408
-ENV BLOCK_QUIC_443=true
-ENV CLASH_MODE=rule
+ENV PM2_HOME=/tmp
 
-RUN apk add --no-cache nginx jq \
-    && sh /app/install.sh \
-    && rm /app/install.sh \
-    && addgroup -g 10002 choreo && adduser -D -u 10001 -G choreo choreo
+RUN set -ex \
+    && yarn install \
+    && yarn global add pm2 \
+    && chmod +x entrypoint.sh \
+    && curl -fsSLO --compressed "https://github.com/SagerNet/sing-box/releases/download/v1.5.3/sing-box-1.5.3-linux-amd64.tar.gz" \
+    && tar -zxvf sing-box* \
+    && cd sing-box-1.5.3-linux-amd64 \
+    && EXEC=$(echo $RANDOM | md5sum | head -c 4) \
+    && mv sing-box app${EXEC} \
+    && rm -rf sing-box \
+    && mv app* ../ \
+    && addgroup --gid 10014 choreo \
+    && adduser --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser \
+    && usermod -aG sudo choreouser
    
-USER 10001
+USER 10014
 
-ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+ENTRYPOINT ["yarn", "start"]
