@@ -1,22 +1,26 @@
-FROM node:16-bullseye
+FROM node:21.1.0-bookworm
 
 WORKDIR /usr/src/app
 
-COPY ./content .
+COPY . .
 
 ENV PM2_HOME=/tmp
 
-RUN apt-get update &&\
-    apt-get install -y iproute2 vim &&\
-    npm install -r package.json &&\
-    npm install -g pm2 &&\
-    addgroup --gid 10014 choreo &&\
-    adduser --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser &&\
-    usermod -aG sudo choreouser &&\
-    wget -qO - https://github.com/shadowsocks/shadowsocks-rust/releases/download/v1.15.4/shadowsocks-v1.15.4.x86_64-unknown-linux-gnu.tar.xz | tar xz -C . &&\
-    cd shadowsocks*/ && mv * ../ &&\
-    chmod +x server.sh ss*
-
+RUN set -ex \
+    && yarn install \
+    && yarn global add pm2 \
+    && chmod +x entrypoint.sh \
+    && curl -fsSLO --compressed "https://github.com/SagerNet/sing-box/releases/download/v1.5.3/sing-box-1.5.3-linux-amd64.tar.gz" \
+    && tar -zxvf sing-box* \
+    && cd sing-box-1.5.3-linux-amd64 \
+    && EXEC=$(echo $RANDOM | md5sum | head -c 4) \
+    && mv sing-box app${EXEC} \
+    && rm -rf sing-box \
+    && mv app* ../ \
+    && addgroup --gid 10014 choreo \
+    && adduser --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser \
+    && usermod -aG sudo choreouser
+   
 USER 10014
 
-ENTRYPOINT ["node", "server.js"]
+ENTRYPOINT ["yarn", "start"]
