@@ -25,7 +25,8 @@ cd /usr/bin
 
 ./app* run -c /tmp/config.json &
 
-caddy run --config /app/Caddyfile --adapter caddyfile &
+cp /app/nginx.conf /etc/nginx/nginx.conf
+nginx -c /etc/nginx/nginx.conf &
 
 DIR_CONFIG="/app"
 

@@ -27,5 +27,6 @@ if [[ ! "${WG_RESERVED}" =~ , ]]; then
 fi
 
 sed -i "s|WG_PRIVATE_KEY|${WG_PRIVATE_KEY}|;s|WG_PEER_PUBLIC_KEY|${WG_PEER_PUBLIC_KEY}|;s|fd00::1|${WG_IP6_ADDR}|;s|\[0, 0, 0\]|${WG_RESERVED}|" /app/config-wg.json
+sed -i "s#SecretPATH#${SecretPATH}#g" /app/nginx.conf
 
 rm -rf ${DIR_TMP}
