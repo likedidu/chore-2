@@ -11,7 +11,7 @@ ENV WG_MTU=1408
 ENV BLOCK_QUIC_443=true
 ENV CLASH_MODE=rule
 
-RUN apk add --no-cache caddy jq \
+RUN apk add --no-cache nginx jq \
     && sh /app/install.sh \
     && rm /app/install.sh \
     && addgroup -g 10002 choreo && adduser -D -u 10001 -G choreo choreo
