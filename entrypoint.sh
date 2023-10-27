@@ -37,8 +37,8 @@ generate_config() {
       "sniff_override_destination": true,
       "type": "vmess",
       "tag": "vmess-in",
-      "listen": "::",
-      "listen_port": 63003,
+      "listen": "127.0.0.1",
+      "listen_port": 62001,
       "users": [
         {
           "uuid": "${UUID}",
